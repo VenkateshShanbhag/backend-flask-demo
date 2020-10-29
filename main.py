@@ -1,14 +1,18 @@
 from flask import Flask, request
+from pymongo import MongoClient
+from bson.json_util import dumps
 
 app = Flask(__name__)
+client = MongoClient(port=27017)
+db = client.m201
 
-
-@app.route("/", methods=["GET"])
-def hello():
-
-    name= request.args.get("name")
-    print(name)
-    return name+"hello world"
+@app.route("/details", methods=["GET"])
+def get_restaurant_details():
+    return_details = {}
+    count = 0
+    restaurant_name = request.args.get("restaurant_name")
+    details = db.restaurants.find({"name":restaurant_name})
+    return dumps(details)
 
 
 @app.route("/name", methods=["POST"])
