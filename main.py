@@ -1,36 +1,23 @@
-from flask import Flask, request
-from pymongo import MongoClient
+# from flask import Flask, request
+
 from bson.json_util import dumps
+from src.utility.mongoutility import get_restaurant_details,put_restaurant_details
 
-app = Flask(__name__)
-client = MongoClient(port=27017)
-db = client.m201
+import flask
 
-@app.route("/details", methods=["GET"])
-def get_restaurant_details():
-    return_details = {}
-    count = 0
-    restaurant_name = request.args.get("restaurant_name")
-    details = db.restaurants.find({"name":restaurant_name})
-    return dumps(details)
+app = flask.Flask(__name__)
 
 
-@app.route("/name", methods=["POST"])
-def hello_world():
-
-    try:
-        var = request.get_json()
-        for i in var.values():
-            if i["name"] == "Venkatesh":
-                print("posting to database")
-        returnMsg = "Success!!"
-    except:
-        print("failuyre")
-        returnMsg = "failed!!"
-        #incase of failure
-
-    return returnMsg
-
+@app.route("/details", methods=["GET","POST"])
+def restaurant_details():
+    if flask.request.method == 'GET':
+        restaurant_name = flask.request.args.get("restaurant_name")
+        details = get_restaurant_details(restaurant_name)
+        return dumps(details)
+    if flask.request.method == 'POST':
+        details = flask.request.get_json()
+        res = put_restaurant_details(details)
+        return res
 
 print(__name__)
 
