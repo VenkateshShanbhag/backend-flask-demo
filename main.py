@@ -16,8 +16,8 @@ def restaurant_details():
         return dumps(details)
     if flask.request.method == 'POST':
         details = flask.request.get_json()
-        res = put_restaurant_details(details)
-        return res
+        restuarant = put_restaurant_details(details)
+        return restuarant
 
 print(__name__)
 
